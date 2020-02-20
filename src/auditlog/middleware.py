@@ -34,12 +34,12 @@ class AuditlogMiddleware(MiddlewareMixin):
         # Initialize thread local storage
         threadlocal.auditlog = {
             'signal_duid': (self.__class__, time.time()),
-            'remote_addr': request.META.get('REMOTE_ADDR'),
+            # 'remote_addr': request.META.get('REMOTE_ADDR'),
         }
 
         # In case of proxy, set 'original' address
-        if request.META.get('HTTP_X_FORWARDED_FOR'):
-            threadlocal.auditlog['remote_addr'] = request.META.get('HTTP_X_FORWARDED_FOR').split(',')[0]
+        # if request.META.get('HTTP_X_FORWARDED_FOR'):
+        #     threadlocal.auditlog['remote_addr'] = request.META.get('HTTP_X_FORWARDED_FOR').split(',')[0]
 
         # Connect signal for automatic logging
         if hasattr(request, 'user') and is_authenticated(request.user):
@@ -81,4 +81,4 @@ class AuditlogMiddleware(MiddlewareMixin):
             if sender == LogEntry and isinstance(user, auth_user_model) and instance.actor is None:
                 instance.actor = user
 
-            instance.remote_addr = threadlocal.auditlog['remote_addr']
+            # instance.remote_addr = threadlocal.auditlog['remote_addr']
